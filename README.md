@@ -35,7 +35,7 @@ EOF
 
 - Клонирование репозитория
 ```
-git clone [https://github.com/Trohimets/sk_teh/](https://github.com/Trohimets/sk_teh.git)
+git clone https://github.com/Trohimets/sk_teh.git
 ```
 -Установка зависимостей
 ```
