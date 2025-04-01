@@ -70,15 +70,15 @@ node server.js
 json
 ```
 {
-"id": <number>,
-"add": <number>
+"id": "<number>",
+"add": "<number>"
 }
 ```
 #### Успешный ответ
 
 json
 {
-"current": <number>
+"current": "<number>"
 }
 
 #### Ошибка
