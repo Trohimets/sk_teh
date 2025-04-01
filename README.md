@@ -1,29 +1,91 @@
-Тестовое задание
+# Тестовое задание - REST API с PostgreSQL
 
-Предварительные условия
+## Описание
+REST API сервис на Node.js для атомарного увеличения числового значения в PostgreSQL базе данных.
 
-Предзаполненная таблица в базе данных postgres.
-Имя пользователя и название таблицы должно точно соответствовать указанным.
+## Предварительные требования
+- Node.js
+- PostgreSQL
+- npm
+
+## Установка и настройка базы данных
+
+bash
+
+Удаление существующей БД и пользователя (если есть)
 dropdb --if-exists sk_example_db
-    dropuser --if-exists sk_example_user
-    createuser sk_example_user -P
-    createdb -O sk_example_user sk_example_db
-    psql -U sk_example_user -d sk_example_db <<EOF
-    CREATE TABLE sk_example_table (id SERIAL, obj JSONB NOT NULL, PRIMARY KEY(id));
-    INSERT INTO sk_example_table (obj) VALUES ('{"current":0}'::JSONB);
-    EOF
-Условие задачи
-Spring приложение с обработкой POST запроса по урлу /modify
+dropuser --if-exists sk_example_user
+Создание нового пользователя и БД
+createuser sk_example_user -P
+createdb -O sk_example_user sk_example_db
+Инициализация таблицы
+psql -U sk_example_user -d sk_example_db <<EOF
+CREATE TABLE sk_example_table (id SERIAL, obj JSONB NOT NULL, PRIMARY KEY(id));
+INSERT INTO sk_example_table (obj) VALUES ('{"current":0}'::JSONB);
+EOF
 
-Запрос удовлетворяет JSON схеме
-{
-        "id": <number>,
-        "add": <number>
-    }
-Ответ удовлетворяет JSON схеме
-{
-        "current": <number>
-    }
-В процессе обработки необходимо атомарно увеличить на величину add значение поля current столбца obj строки идентифицируемой id в таблице sk_example_table, и вернуть полученое значение через API.
+## Установка приложения
 
-В случае невозможности провести операцию, вернуть http статус 418
+bash
+
+Клонирование репозитория
+git clone [url-репозитория]
+Установка зависимостей
+npm install
+Настройка переменных окружения
+cp .env.example .env
+Отредактируйте .env файл, установив необходимые значения
+
+## Конфигурация
+Создайте файл .env в корневой директории проекта со следующими параметрами:
+
+env
+DB_USER=postgres
+DB_HOST=localhost
+DB_NAME=sk_example_db
+DB_PASSWORD=ваш_пароль
+DB_PORT=5432
+PORT=3000
+
+## Запуск приложения
+
+bash
+
+npm start
+или
+node server.js
+
+## API Endpoints
+
+### POST /modify
+Увеличивает значение поля current в записи с указанным id.
+
+#### Запрос
+json
+{
+"id": <number>,
+"add": <number>
+}
+
+#### Успешный ответ
+
+json
+{
+"current": <number>
+}
+
+#### Ошибка
+- Статус: 418
+- Возвращается, если запись не найдена или произошла ошибка при обработке
+
+## Примеры использования
+
+bash
+curl -X POST http://localhost:3000/modify \
+-H "Content-Type: application/json" \
+-d '{"id": 1, "add": 5}'
+
+bash
+curl -X POST http://localhost:3000/modify \
+-H "Content-Type: application/json" \
+-d '{"id": 1, "add": 5}'
